@@ -21,23 +21,23 @@ export default function Pagination({ current, total, onChange }: PaginationProps
       <button
         onClick={() => onChange(current - 1)}
         disabled={current === 1}
-        className="px-3 py-2 rounded-lg text-sm hover:bg-gray-100 disabled:opacity-30 disabled:cursor-not-allowed transition-colors"
+        className="px-4 py-2.5 rounded-xl text-sm font-bold hover:bg-pink-50 disabled:opacity-30 disabled:cursor-not-allowed transition-all text-text-secondary"
       >
-        ← 上一页
+        上一页
       </button>
       {pages.map((page, i) =>
         page === '...' ? (
-          <span key={`dots-${i}`} className="px-2 text-text-secondary">
+          <span key={`dots-${i}`} className="px-2 text-text-secondary font-bold">
             ...
           </span>
         ) : (
           <button
             key={page}
             onClick={() => onChange(page as number)}
-            className={`w-10 h-10 rounded-lg text-sm font-medium transition-colors ${
+            className={`w-10 h-10 rounded-xl text-sm font-bold transition-all ${
               page === current
-                ? 'bg-primary text-white'
-                : 'hover:bg-gray-100'
+                ? 'bg-gradient-to-br from-[#FF4081] to-[#FF6D3A] text-white shadow-lg shadow-pink/30'
+                : 'hover:bg-pink-50 text-text-secondary'
             }`}
           >
             {page}
@@ -47,9 +47,9 @@ export default function Pagination({ current, total, onChange }: PaginationProps
       <button
         onClick={() => onChange(current + 1)}
         disabled={current === total}
-        className="px-3 py-2 rounded-lg text-sm hover:bg-gray-100 disabled:opacity-30 disabled:cursor-not-allowed transition-colors"
+        className="px-4 py-2.5 rounded-xl text-sm font-bold hover:bg-pink-50 disabled:opacity-30 disabled:cursor-not-allowed transition-all text-text-secondary"
       >
-        下一页 →
+        下一页
       </button>
     </div>
   );

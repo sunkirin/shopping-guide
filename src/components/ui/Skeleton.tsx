@@ -1,15 +1,15 @@
 export function ProductCardSkeleton() {
   return (
-    <div className="bg-card rounded-xl overflow-hidden animate-pulse">
-      <div className="aspect-square bg-gray-200" />
+    <div className="bg-white rounded-2xl overflow-hidden animate-pulse shadow-sm">
+      <div className="aspect-square bg-gradient-to-b from-gray-100 to-gray-200" />
       <div className="p-3 space-y-3">
-        <div className="h-4 bg-gray-200 rounded w-3/4" />
-        <div className="h-4 bg-gray-200 rounded w-1/2" />
-        <div className="h-6 bg-gray-200 rounded w-2/3" />
-        <div className="h-6 bg-gray-200 rounded w-1/3" />
+        <div className="h-4 bg-gray-200 rounded-full w-3/4" />
+        <div className="h-4 bg-gray-200 rounded-full w-1/2" />
+        <div className="h-6 bg-gray-200 rounded-full w-2/3" />
+        <div className="h-6 bg-gray-200 rounded-full w-1/3" />
         <div className="flex justify-between">
-          <div className="h-3 bg-gray-200 rounded w-16" />
-          <div className="h-3 bg-gray-200 rounded w-12" />
+          <div className="h-3 bg-gray-200 rounded-full w-16" />
+          <div className="h-3 bg-gray-200 rounded-full w-12" />
         </div>
       </div>
     </div>

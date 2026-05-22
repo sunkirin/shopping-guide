@@ -17,14 +17,14 @@ export default function PriceDisplay({ originalPrice, currentPrice, size = 'md' 
 
   return (
     <div className="flex items-baseline gap-2 flex-wrap">
-      <span className={`${s.current} font-bold text-primary`}>
+      <span className={`${s.current} font-black gradient-text`}>
         ¥{currentPrice}
       </span>
       <span className={`${s.original} text-text-secondary line-through`}>
         ¥{originalPrice}
       </span>
       {discount > 0 && (
-        <span className={`${s.discount} bg-primary-light text-primary-dark font-medium px-1.5 py-0.5 rounded`}>
+        <span className={`${s.discount} bg-gradient-to-r from-[#FF4081] to-[#FF6D3A] text-white font-bold px-1.5 py-0.5 rounded-lg shadow-sm`}>
           -{discount}%
         </span>
       )}

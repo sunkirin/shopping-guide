@@ -1,21 +1,22 @@
 import { Link } from 'react-router-dom';
-import { categories } from '../../data/categories';
+import type { Category } from '../../types';
 
 interface CategorySidebarProps {
   activeSlug?: string;
+  categories: Category[];
 }
 
-export default function CategorySidebar({ activeSlug }: CategorySidebarProps) {
+export default function CategorySidebar({ activeSlug, categories }: CategorySidebarProps) {
   return (
-    <aside className="bg-card rounded-xl p-4">
-      <h4 className="font-bold text-sm mb-3">商品分类</h4>
+    <aside className="dopamine-card p-4">
+      <h4 className="font-black text-sm mb-3 gradient-text">商品分类</h4>
       <nav className="space-y-0.5">
         <Link
           to="/"
-          className={`block px-3 py-2 rounded-lg text-sm transition-colors ${
+          className={`block px-3 py-2 rounded-xl text-sm font-medium transition-all ${
             !activeSlug
-              ? 'bg-primary-light text-primary font-medium'
-              : 'text-text-secondary hover:bg-gray-50'
+              ? 'bg-gradient-to-r from-[#FF4081] to-[#FF6D3A] text-white shadow-md'
+              : 'text-text-secondary hover:bg-pink-50 hover:text-[#FF4081]'
           }`}
         >
           全部商品
@@ -24,16 +25,16 @@ export default function CategorySidebar({ activeSlug }: CategorySidebarProps) {
           <Link
             key={cat.id}
             to={`/category/${cat.slug}`}
-            className={`flex items-center justify-between px-3 py-2 rounded-lg text-sm transition-colors ${
+            className={`flex items-center justify-between px-3 py-2 rounded-xl text-sm font-medium transition-all ${
               activeSlug === cat.slug
-                ? 'bg-primary-light text-primary font-medium'
-                : 'text-text-secondary hover:bg-gray-50'
+                ? 'bg-gradient-to-r from-[#FF4081] to-[#FF6D3A] text-white shadow-md'
+                : 'text-text-secondary hover:bg-pink-50 hover:text-[#FF4081]'
             }`}
           >
             <span>
               {cat.icon} {cat.name}
             </span>
-            <span className="text-xs bg-gray-100 px-1.5 py-0.5 rounded-full">
+            <span className="text-xs bg-white/20 px-1.5 py-0.5 rounded-full font-bold">
               {cat.productCount}
             </span>
           </Link>

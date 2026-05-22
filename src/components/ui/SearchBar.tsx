@@ -1,4 +1,4 @@
-import { useState, FormEvent } from 'react';
+import { useState, type FormEvent } from 'react';
 import { useNavigate } from 'react-router-dom';
 
 export default function SearchBar() {
@@ -19,10 +19,10 @@ export default function SearchBar() {
         value={query}
         onChange={(e) => setQuery(e.target.value)}
         placeholder="搜索商品、品牌或关键词..."
-        className="w-full h-10 pl-10 pr-4 rounded-full bg-gray-100 border-0 text-sm focus:outline-none focus:ring-2 focus:ring-primary focus:bg-white transition-all"
+        className="w-full h-10 pl-10 pr-20 rounded-full bg-pink-50 border-2 border-transparent text-sm focus:outline-none focus:border-pink focus:bg-white transition-all placeholder:text-pink-300"
       />
       <svg
-        className="absolute left-3 top-1/2 -translate-y-1/2 text-text-secondary"
+        className="absolute left-3 top-1/2 -translate-y-1/2 text-pink-300"
         width="18"
         height="18"
         viewBox="0 0 24 24"
@@ -35,7 +35,7 @@ export default function SearchBar() {
       </svg>
       <button
         type="submit"
-        className="absolute right-2 top-1/2 -translate-y-1/2 bg-primary text-white text-xs px-4 py-1.5 rounded-full hover:bg-primary-dark transition-colors"
+        className="absolute right-1.5 top-1/2 -translate-y-1/2 bg-gradient-to-r from-[#FF4081] to-[#FF6D3A] text-white text-xs font-bold px-5 py-1.5 rounded-full hover:scale-105 transition-transform shadow-md"
       >
         搜索
       </button>

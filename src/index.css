@@ -1,23 +1,30 @@
 @import "tailwindcss";
 
 @theme {
-  --color-primary: #ff4d4f;
-  --color-primary-dark: #e63946;
-  --color-primary-light: #fff1f0;
-  --color-secondary: #ff7a45;
-  --color-accent: #fa8c16;
-  --color-bg: #f5f5f5;
+  --color-primary: #FF4081;
+  --color-primary-dark: #E0306E;
+  --color-primary-light: #FFF0F5;
+  --color-secondary: #FF6D3A;
+  --color-accent: #FFB300;
+  --color-bg: #FFF5F7;
   --color-card: #ffffff;
-  --color-text: #333333;
-  --color-text-secondary: #999999;
-  --color-border: #f0f0f0;
+  --color-text: #2D1B2E;
+  --color-text-secondary: #9B7B9E;
+  --color-border: #F5E6F0;
+  --color-pink: #FF4081;
+  --color-orange: #FF6D3A;
+  --color-yellow: #FFB300;
+  --color-lime: #A8E6CF;
+  --color-blue: #4ECDC4;
+  --color-purple: #A855F7;
 }
 
 body {
   margin: 0;
   font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'PingFang SC',
-    'Hiragino Sans GB', 'Microsoft YaHei', sans-serif;
-  background-color: var(--color-bg);
+    'Hiragino Sans GB', 'Microsoft YaHei', 'Noto Sans SC', sans-serif;
+  background: linear-gradient(135deg, #FFF5F7 0%, #FFF0F5 30%, #F5F0FF 60%, #FFF8F0 100%);
+  background-attachment: fixed;
   color: var(--color-text);
   -webkit-font-smoothing: antialiased;
 }
@@ -28,18 +35,53 @@ body {
   height: 6px;
 }
 ::-webkit-scrollbar-thumb {
-  background: #d9d9d9;
+  background: linear-gradient(180deg, #FF4081, #FF6D3A);
   border-radius: 3px;
 }
 ::-webkit-scrollbar-thumb:hover {
-  background: #bfbfbf;
+  background: linear-gradient(180deg, #E0306E, #FF5722);
 }
 
-/* Horizontal scroll for hot deals */
+/* Horizontal scroll */
 .scrollbar-hide::-webkit-scrollbar {
   display: none;
 }
 .scrollbar-hide {
   -ms-overflow-style: none;
   scrollbar-width: none;
+}
+
+/* Dopamine utility classes */
+.dopamine-badge {
+  @apply inline-flex items-center gap-1 px-3 py-1 rounded-full text-white text-xs font-bold;
+  background: linear-gradient(135deg, #FF4081, #FF6D3A);
+  box-shadow: 0 2px 8px rgba(255, 64, 129, 0.3);
+}
+
+.dopamine-card {
+  @apply bg-white rounded-2xl;
+  box-shadow: 0 4px 20px rgba(255, 64, 129, 0.08);
+  transition: all 0.3s cubic-bezier(0.34, 1.56, 0.64, 1);
+}
+.dopamine-card:hover {
+  transform: translateY(-4px);
+  box-shadow: 0 8px 30px rgba(255, 64, 129, 0.15);
+}
+
+/* Gradient text utility */
+.gradient-text {
+  background: linear-gradient(135deg, #FF4081, #FF6D3A);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+}
+
+/* Bounce animation */
+@keyframes pop-in {
+  0% { transform: scale(0.8); opacity: 0; }
+  70% { transform: scale(1.05); }
+  100% { transform: scale(1); opacity: 1; }
+}
+.animate-pop {
+  animation: pop-in 0.4s cubic-bezier(0.34, 1.56, 0.64, 1);
 }
