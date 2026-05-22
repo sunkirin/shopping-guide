@@ -6,6 +6,7 @@ import cors from 'cors';
 import { getDatabase, initDatabase, seedDatabase } from './database.js';
 import productRoutes from './routes/products.js';
 import categoryRoutes from './routes/categories.js';
+import adminRoutes from './routes/admin.js';
 
 const __dirname = path.dirname(fileURLToPath(import.meta.url));
 const app = express();
@@ -18,6 +19,7 @@ app.use(express.json());
 // API Routes
 app.use('/api/products', productRoutes);
 app.use('/api/categories', categoryRoutes);
+app.use('/api/admin', adminRoutes);
 
 // Health check
 app.get('/api/health', (_req, res) => {
