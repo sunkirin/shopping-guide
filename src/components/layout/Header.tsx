@@ -8,7 +8,7 @@ export default function Header() {
       <div className="max-w-7xl mx-auto px-4 py-3 flex items-center gap-4">
         <Link to="/" className="flex items-center gap-2.5 shrink-0 group">
           <img src="/logo.svg" alt="享折扣" className="w-9 h-9 transition-transform group-hover:scale-110 group-hover:rotate-6" />
-          <span className="text-xl font-black hidden sm:block gradient-text">享折扣</span>
+          <span className="text-xl font-black hidden sm:block gradient-text">享折扣 · 享生活</span>
         </Link>
 
         <div className="flex-1 flex justify-center">
