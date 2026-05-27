@@ -86,7 +86,7 @@ function sign(params: Record<string, any>, clientSecret: string): string {
     .sort()
     .map(k => `${k}${params[k]}`)
     .join('');
-  return crypto.createHash('md5').update(sorted + clientSecret).digest('hex').toUpperCase();
+  return crypto.createHash('md5').update(clientSecret + sorted + clientSecret).digest('hex').toUpperCase();
 }
 
 /**
