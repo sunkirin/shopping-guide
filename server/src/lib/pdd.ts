@@ -1,15 +1,6 @@
 import crypto from 'crypto';
 import { getPddConfig } from '../config.js';
 
-interface PddRequest {
-  type: string;
-  client_id: string;
-  timestamp: number;
-  data_type: string;
-  data_json: string;
-  sign: string;
-}
-
 interface PddResponse {
   error_response?: { error_code: number; error_msg: string };
   [key: string]: any;
@@ -93,34 +84,27 @@ function sign(params: Record<string, any>, clientSecret: string): string {
 /**
  * 调用拼多多 API
  */
-async function callPdd(type: string, dataJson: Record<string, any> = {}): Promise<any> {
+async function callPdd(type: string, apiParams: Record<string, any> = {}): Promise<any> {
   const { clientId, clientSecret } = getPddConfig();
 
   if (!clientId || !clientSecret) {
     throw new Error('拼多多API未配置：请设置 PDD_CLIENT_ID 和 PDD_CLIENT_SECRET');
   }
 
-  const body: PddRequest = {
+  const allParams: Record<string, string> = {
     type,
     client_id: clientId,
-    timestamp: Math.floor(Date.now() / 1000),
+    timestamp: String(Math.floor(Date.now() / 1000)),
     data_type: 'JSON',
-    data_json: JSON.stringify(dataJson),
-    sign: '',
+    ...Object.fromEntries(Object.entries(apiParams).map(([k, v]) => [k, String(v)])),
   };
 
-  body.sign = sign({
-    client_id: body.client_id,
-    data_json: body.data_json,
-    data_type: body.data_type,
-    timestamp: String(body.timestamp),
-    type: body.type,
-  }, clientSecret);
+  allParams.sign = sign(allParams, clientSecret);
 
   const res = await fetch('https://gw-api.pinduoduo.com/api/router', {
     method: 'POST',
-    headers: { 'Content-Type': 'application/json' },
-    body: JSON.stringify(body),
+    headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
+    body: new URLSearchParams(allParams).toString(),
   });
 
   const data = await res.json() as PddResponse;
