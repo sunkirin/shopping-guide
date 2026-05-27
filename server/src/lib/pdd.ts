@@ -5,6 +5,7 @@ interface PddRequest {
   type: string;
   client_id: string;
   timestamp: number;
+  data_type: string;
   data_json: string;
   sign: string;
 }
@@ -86,7 +87,7 @@ function sign(params: Record<string, any>, clientSecret: string): string {
     .sort()
     .map(k => `${k}${params[k]}`)
     .join('');
-  return crypto.createHash('md5').update(clientSecret + sorted).digest('hex').toUpperCase();
+  return crypto.createHash('md5').update(clientSecret + sorted + clientSecret).digest('hex').toUpperCase();
 }
 
 /**
@@ -99,20 +100,20 @@ async function callPdd(type: string, dataJson: Record<string, any> = {}): Promis
     throw new Error('拼多多API未配置：请设置 PDD_CLIENT_ID 和 PDD_CLIENT_SECRET');
   }
 
-  const timestamp = Math.floor(Date.now() / 1000);
-
   const body: PddRequest = {
     type,
     client_id: clientId,
-    timestamp,
+    timestamp: Math.floor(Date.now() / 1000),
+    data_type: 'JSON',
     data_json: JSON.stringify(dataJson),
-    sign: '', // 先占位
+    sign: '',
   };
 
   body.sign = sign({
     client_id: body.client_id,
     data_json: body.data_json,
-    timestamp: body.timestamp,
+    data_type: body.data_type,
+    timestamp: String(body.timestamp),
     type: body.type,
   }, clientSecret);
 
