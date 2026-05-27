@@ -1,7 +1,7 @@
 // 简单环境变量读取，兼容直接赋值和 import.meta.env（Vite 风格）
 // 实际运行时由 tsx 载入，直接从 process.env 读取即可
 
-let pddCached: { clientId: string; clientSecret: string } | null = null;
+let pddCached: { clientId: string; clientSecret: string; pid: string } | null = null;
 
 export function getPddConfig() {
   if (pddCached) return pddCached;
@@ -9,6 +9,7 @@ export function getPddConfig() {
   pddCached = {
     clientId: process.env.PDD_CLIENT_ID || '',
     clientSecret: process.env.PDD_CLIENT_SECRET || '',
+    pid: process.env.PDD_PID || '',
   };
 
   return pddCached;

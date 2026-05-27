@@ -85,13 +85,14 @@ function sign(params: Record<string, any>, clientSecret: string): string {
  * 调用拼多多 API
  */
 async function callPdd(type: string, apiParams: Record<string, any> = {}): Promise<any> {
-  const { clientId, clientSecret } = getPddConfig();
+  const { clientId, clientSecret, pid } = getPddConfig();
 
   if (!clientId || !clientSecret) {
     throw new Error('拼多多API未配置：请设置 PDD_CLIENT_ID 和 PDD_CLIENT_SECRET');
   }
 
   const allParams: Record<string, string> = {
+    pid,
     type,
     client_id: clientId,
     timestamp: String(Math.floor(Date.now() / 1000)),
