@@ -8,6 +8,7 @@ interface PddResponse {
 
 export interface PddGoodsBasic {
   goods_id: number;
+  goods_sign: string;
   goods_name: string;
   goods_desc: string;
   goods_thumbnail_url: string;
@@ -85,20 +86,24 @@ function sign(params: Record<string, any>, clientSecret: string): string {
  * 调用拼多多 API
  */
 async function callPdd(type: string, apiParams: Record<string, any> = {}): Promise<any> {
-  const { clientId, clientSecret, pid } = getPddConfig();
+  const { clientId, clientSecret } = getPddConfig();
 
   if (!clientId || !clientSecret) {
     throw new Error('拼多多API未配置：请设置 PDD_CLIENT_ID 和 PDD_CLIENT_SECRET');
   }
 
   const allParams: Record<string, string> = {
-    pid,
     type,
     client_id: clientId,
     timestamp: String(Math.floor(Date.now() / 1000)),
     data_type: 'JSON',
-    ...Object.fromEntries(Object.entries(apiParams).map(([k, v]) => [k, String(v)])),
   };
+
+  for (const [k, v] of Object.entries(apiParams)) {
+    if (v !== undefined && v !== null && v !== '') {
+      allParams[k] = String(v);
+    }
+  }
 
   allParams.sign = sign(allParams, clientSecret);
 
@@ -130,7 +135,9 @@ export async function searchGoods(params: {
   withCoupon?: boolean;
   rangeList?: string;
 }): Promise<PddSearchResponse> {
+  const { pid } = getPddConfig();
   const data = await callPdd('pdd.ddk.goods.search', {
+    pid,
     keyword: params.keyword || '',
     cat_id: params.catId,
     page: params.page || 1,
@@ -147,15 +154,102 @@ export async function searchGoods(params: {
  * 获取商品详情
  */
 export async function getGoodsDetail(goodsIds: number[]): Promise<any> {
+  const { pid } = getPddConfig();
   return callPdd('pdd.ddk.goods.detail', {
-    goods_id_list: goodsIds,
+    pid,
+    goods_id_list: JSON.stringify(goodsIds),
   });
+}
+
+/**
+ * 生成多多进宝推广链接
+ * 为指定商品生成带佣金的购买链接和优惠券链接
+ *
+ * @param goodsList [{goodsId, goodsSign}] 商品ID和goods_sign对
+ */
+export async function generatePromotionUrls(
+  goodsList: { goodsId: number; goodsSign: string }[],
+): Promise<Map<number, { buyLink: string; couponLink: string; shortUrl: string }>> {
+  const signs = goodsList.map(g => g.goodsSign);
+
+  const data = await callPdd('pdd.ddk.goods.promotion.url.generate', {
+    p_id: getPddConfig().pid,
+    goods_sign_list: JSON.stringify(signs),
+    generate_short_url: true,
+    generate_mobile: true,
+    multi_group: true,
+  });
+
+  const result = new Map<number, { buyLink: string; couponLink: string; shortUrl: string }>();
+  const list = data?.goods_promotion_url_generate_response?.goods_promotion_url_list || [];
+
+  for (const item of list) {
+    // 从 URL 中提取 goods_id
+    const idMatch = (item.mobile_url || item.url || '').match(/goods_id=(\d+)/);
+    const goodsId = item.goods_id || (idMatch ? Number(idMatch[1]) : 0);
+
+    if (goodsId > 0) {
+      result.set(goodsId, {
+        buyLink: item.mobile_url || item.url || '',
+        couponLink: item.mobile_short_url || item.short_url || item.mobile_url || item.url || '',
+        shortUrl: item.short_url || item.mobile_short_url || '',
+      });
+    }
+  }
+
+  return result;
+}
+
+/**
+ * 查询 PID 是否已授权备案
+ * 返回 bind=1 表示已备案
+ */
+export async function checkMemberAuthority(): Promise<{ bind: boolean; msg: string }> {
+  const data = await callPdd('pdd.ddk.member.authority.query', {
+    pid: getPddConfig().pid,
+  });
+
+  const resp = data?.member_authority_query_response;
+  const bind = resp?.bind === 1;
+  return {
+    bind,
+    msg: bind ? '已授权备案' : '未授权备案',
+  };
+}
+
+/**
+ * 生成授权备案链接
+ * 需要先搜索一个商品获取 goods_sign，然后生成授权链接
+ * 用户点击链接后完成 PID 授权
+ */
+export async function generateAuthorityUrl(): Promise<{ url: string; shortUrl: string }> {
+  // 先搜一个商品拿 goods_sign
+  const searchRes = await searchGoods({ pageSize: 10, withCoupon: true });
+  const goodsList = searchRes.goods_search_response?.goods_list || [];
+  if (goodsList.length === 0) {
+    throw new Error('无法获取商品用于生成授权链接');
+  }
+
+  const data = await callPdd('pdd.ddk.goods.promotion.url.generate', {
+    p_id: getPddConfig().pid,
+    goods_sign_list: JSON.stringify([goodsList[0].goods_sign]),
+    generate_authority_url: true,
+  });
+
+  const resp = data?.goods_promotion_url_generate_response?.goods_promotion_url_list?.[0] || {};
+  return {
+    url: resp.mobile_url || resp.url || '',
+    shortUrl: resp.mobile_short_url || resp.short_url || '',
+  };
 }
 
 /**
  * 将拼多多商品转换为我们的 Product 格式
  */
-export function mapPddToProduct(pdd: PddGoodsBasic) {
+export function mapPddToProduct(
+  pdd: PddGoodsBasic,
+  promotion?: { buyLink: string; couponLink: string; shortUrl: string },
+) {
   const cat = guessCategory(pdd.category_name || pdd.opt_name || '');
   const couponAmount = Math.round(pdd.coupon_discount / 100); // 分→元
 
@@ -185,17 +279,16 @@ export function mapPddToProduct(pdd: PddGoodsBasic) {
     original_price: Math.round(pdd.min_normal_price / 100),
     current_price: Math.round(pdd.min_group_price / 100),
     coupon_amount: couponAmount,
-    coupon_link: '',
+    coupon_link: promotion?.couponLink || '',
     platform: 'pdd',
     platform_label: '拼多多',
     category_id: cat.category_id,
-    // 不设置 category_name 和 category_slug，让 DB JOIN 处理
     sales,
     rating: 4.5,
-    buy_link: '',
+    buy_link: promotion?.buyLink || '',
     is_hot: couponAmount > 10 ? 1 : 0,
     is_new: 0,
     end_time: endTime,
-    pdd_goods_id: pdd.goods_id, // 存原始ID用于去重
+    pdd_goods_id: pdd.goods_id,
   };
 }

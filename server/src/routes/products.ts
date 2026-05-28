@@ -38,7 +38,7 @@ router.get('/', async (req, res) => {
     }
 
     // Count total
-    const countSql = sql.replace(/SELECT .* FROM/, 'SELECT COUNT(*) as total FROM');
+    const countSql = sql.replace(/SELECT[\s\S]*?FROM/, 'SELECT COUNT(*) as total FROM');
     const countResult = queryOne<{ total: number }>(countSql, params);
     const total = countResult?.total || 0;
 

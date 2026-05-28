@@ -1,11 +1,8 @@
-import { searchGoods, mapPddToProduct, type PddGoodsBasic } from '../lib/pdd.js';
+import { searchGoods, generatePromotionUrls, mapPddToProduct, type PddGoodsBasic } from '../lib/pdd.js';
 import { getDatabase, dbRun, saveDatabase } from '../database.js';
 
 const PDD_ID_FIELD = 'pdd_goods_id';
 
-/**
- * 确保 products 表有 pdd_goods_id 字段（用于去重）
- */
 function ensurePddColumn() {
   try {
     dbRun(`ALTER TABLE products ADD COLUMN ${PDD_ID_FIELD} INTEGER`);
@@ -16,12 +13,6 @@ function ensurePddColumn() {
 
 /**
  * 从拼多多拉取带优惠券的商品，写入数据库（按 pdd_goods_id 去重）
- *
- * @param keyword  搜索关键词
- * @param catId    拼多多类目ID（可选）
- * @param pages    拉取页数
- * @param pageSize 每页数量
- * @returns 本次新增的商品数量
  */
 export async function syncPddProducts(params: {
   keyword?: string;
@@ -43,21 +34,28 @@ export async function syncPddProducts(params: {
       page,
       pageSize,
       withCoupon: true,
-      sortType: 0, // 综合排序
+      sortType: 0,
     });
 
-    const list = res.goods_search_response?.goods_list || [];
+    const list: PddGoodsBasic[] = res.goods_search_response?.goods_list || [];
     total += list.length;
 
+    if (list.length === 0) break;
+
+    // 批量生成推广链接（带佣金 + 优惠券）
+    const goodsList = list.map(p => ({ goodsId: p.goods_id, goodsSign: p.goods_sign }));
+    let urlMap: Map<number, { buyLink: string; couponLink: string; shortUrl: string }> = new Map();
+
+    try {
+      urlMap = await generatePromotionUrls(goodsList);
+    } catch (err) {
+      console.error('生成推广链接失败，将使用空链接:', err);
+    }
+
     for (const pdd of list) {
-      const product = mapPddToProduct(pdd);
+      const promo = urlMap.get(pdd.goods_id);
+      const product = mapPddToProduct(pdd, promo);
 
-      // 检查 pdd_goods_id 是否已存在
-      const existing = db.exec(
-        `SELECT id FROM products WHERE ${PDD_ID_FIELD} = ${product.pdd_goods_id}`
-      );
-
-      // sql.js exec return is weird, use prepare
       try {
         const stmt = db.prepare(`SELECT id FROM products WHERE ${PDD_ID_FIELD} = ?`);
         stmt.bind([product.pdd_goods_id]);
@@ -99,7 +97,7 @@ export async function syncPddProducts(params: {
       }
     }
 
-    if (list.length < pageSize) break; // 最后一页不足，提前结束
+    if (list.length < pageSize) break;
   }
 
   if (added > 0) saveDatabase();
@@ -111,7 +109,6 @@ export async function syncPddProducts(params: {
  * 同步热门推荐商品
  */
 export async function syncPddHotProducts(): Promise<{ added: number }> {
-  // 搜索热销 + 高额优惠券
   const result = await syncPddProducts({
     keyword: '',
     pages: 2,

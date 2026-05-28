@@ -118,13 +118,17 @@ export default function ProductDetailPage() {
             </div>
 
             <a
-              href={product.buyLink}
+              href={product.buyLink || '#'}
               target="_blank"
               rel="noopener noreferrer"
-              onClick={(e) => e.preventDefault()}
-              className="bg-gradient-to-r from-[#FF4081] to-[#FF6D3A] text-white text-center font-black text-lg py-3.5 rounded-full hover:scale-105 transition-transform shadow-lg shadow-pink/30"
+              onClick={product.buyLink ? undefined : (e) => e.preventDefault()}
+              className={`bg-gradient-to-r text-white text-center font-black text-lg py-3.5 rounded-full transition-transform shadow-lg shadow-pink/30 ${
+                product.buyLink
+                  ? 'from-[#FF4081] to-[#FF6D3A] hover:scale-105 cursor-pointer'
+                  : 'from-gray-400 to-gray-500 cursor-not-allowed opacity-50'
+              }`}
             >
-              去购买 →
+              {product.buyLink ? '去购买 →' : '暂无购买链接'}
             </a>
           </div>
         </div>
