@@ -48,7 +48,8 @@ router.get('/', async (req, res) => {
       case 'price-asc': sql += ' ORDER BY p.current_price ASC'; break;
       case 'price-desc': sql += ' ORDER BY p.current_price DESC'; break;
       case 'rating': sql += ' ORDER BY p.rating DESC'; break;
-      default: sql += ' ORDER BY p.is_hot DESC, p.sales DESC'; break;
+      case 'newest': sql += ' ORDER BY p.created_at DESC'; break;
+      default: sql += ' ORDER BY p.created_at DESC'; break;
     }
 
     // Pagination
@@ -72,7 +73,7 @@ router.get('/hot', async (_req, res) => {
     const products = queryAll<any>(
       `SELECT p.*, c.name as category_name, c.slug as category_slug
        FROM products p LEFT JOIN categories c ON p.category_id = c.id
-       WHERE p.is_hot = 1 ORDER BY p.sales DESC LIMIT 8`
+       ORDER BY p.created_at DESC LIMIT 8`
     ).map(formatProduct);
     res.json({ products });
   } catch (err: any) {

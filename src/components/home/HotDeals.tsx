@@ -13,7 +13,7 @@ export default function HotDeals({ products }: HotDealsProps) {
       <div className="flex items-center justify-between mb-4">
         <h3 className="text-lg font-black flex items-center gap-2">
           <span className="text-2xl">🔥</span>
-          <span className="gradient-text">热销爆款</span>
+          <span className="gradient-text">最新上架</span>
         </h3>
         <Link
           to="/search?q=hot"
