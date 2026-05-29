@@ -153,6 +153,18 @@ export async function searchGoods(params: {
 }
 
 /**
+ * 获取推荐商品（每次返回不同商品）
+ */
+export async function getRecommendGoods(limit: number = 20): Promise<PddGoodsBasic[]> {
+  const { pid } = getPddConfig();
+  const data = await callPdd('pdd.ddk.goods.recommend.get', {
+    pid,
+    limit: String(limit),
+  });
+  return data?.goods_basic_detail_response?.list || [];
+}
+
+/**
  * 获取商品详情
  */
 export async function getGoodsDetail(goodsIds: number[]): Promise<any> {
