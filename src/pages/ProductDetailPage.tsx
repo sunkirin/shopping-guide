@@ -1,7 +1,6 @@
 import { useParams, Link } from 'react-router-dom';
 import { useState, useEffect } from 'react';
 import PriceDisplay from '../components/product/PriceDisplay';
-import CouponBadge from '../components/product/CouponBadge';
 import ProductGrid from '../components/product/ProductGrid';
 import { getProductById, getProducts } from '../api/products';
 import { mapApiProduct } from '../api/mappers';
