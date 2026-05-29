@@ -41,32 +41,26 @@ export default function HeroBanner() {
     <div className="relative mb-8">
       <div
         key={current}
-        className={`animate-pop bg-gradient-to-br ${banner.gradient} rounded-3xl p-6 sm:p-10 text-white overflow-hidden relative min-h-[180px] shadow-lg`}
+        className={`animate-pop bg-gradient-to-br ${banner.gradient} rounded-2xl p-3 sm:p-5 text-white overflow-hidden relative shadow-lg`}
         style={{ boxShadow: '0 8px 32px rgba(255,64,129,0.2)' }}
       >
-        {/* Decorative blobs */}
-        <div className="absolute -top-10 -right-10 w-40 h-40 bg-white/10 rounded-full blur-xl" />
-        <div className="absolute -bottom-8 -left-8 w-32 h-32 bg-white/10 rounded-full blur-xl" />
-        <div className="absolute top-10 right-32 w-16 h-16 bg-yellow/20 rounded-full" />
-
-        <div className="relative z-10">
-          <span className="text-3xl mb-3 block">{banner.emoji}</span>
-          <h2 className="text-2xl sm:text-3xl font-black mb-2">{banner.title}</h2>
-          <p className="text-white/80 mb-5 text-sm sm:text-base">{banner.subtitle}</p>
+        <div className="relative z-10 flex items-center gap-4">
+          <span className="text-2xl">{banner.emoji}</span>
+          <div className="flex-1 min-w-0">
+            <h2 className="text-base sm:text-lg font-black">{banner.title}</h2>
+            <p className="text-white/70 text-xs sm:text-sm">{banner.subtitle}</p>
+          </div>
           <Link
             to={`/product/${banner.productId}`}
-            className="inline-flex items-center gap-1.5 bg-white text-[#FF4081] font-bold px-6 py-2.5 rounded-full hover:scale-105 transition-transform text-sm shadow-md"
+            className="shrink-0 inline-flex items-center gap-1 bg-white text-[#FF4081] font-bold px-3 py-1.5 rounded-full hover:scale-105 transition-transform text-xs shadow-md"
           >
-            去看看
-            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5">
-              <path d="M5 12h14M12 5l7 7-7 7"/>
-            </svg>
+            去看看 →
           </Link>
         </div>
       </div>
 
       {/* Dots */}
-      <div className="flex justify-center gap-2 mt-4">
+      <div className="flex justify-center gap-1.5 mt-2">
         {banners.map((_, i) => (
           <button
             key={i}
