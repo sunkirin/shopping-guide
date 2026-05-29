@@ -47,27 +47,103 @@ export interface PddSearchResponse {
 }
 
 // 拼多多分类映射到我们的分类
-const PDD_CAT_MAP: Record<string, { category_id: number; category_slug: string }> = {
-  '服饰': { category_id: 2, category_slug: 'fashion' },
-  '鞋包': { category_id: 2, category_slug: 'fashion' },
-  '食品': { category_id: 3, category_slug: 'food' },
-  '生鲜': { category_id: 3, category_slug: 'food' },
-  '美妆': { category_id: 4, category_slug: 'beauty' },
-  '个护': { category_id: 4, category_slug: 'beauty' },
-  '数码': { category_id: 1, category_slug: 'digital' },
-  '家电': { category_id: 1, category_slug: 'digital' },
-  '手机': { category_id: 1, category_slug: 'digital' },
-  '家居': { category_id: 5, category_slug: 'home' },
-  '日用': { category_id: 5, category_slug: 'home' },
-  '母婴': { category_id: 6, category_slug: 'baby' },
-  '童装': { category_id: 6, category_slug: 'baby' },
-};
+const PDD_CAT_MAP: [string, { category_id: number; category_slug: string }][] = [
+  // 数码家电
+  ['数码', { category_id: 1, category_slug: 'digital' }],
+  ['手机', { category_id: 1, category_slug: 'digital' }],
+  ['电脑', { category_id: 1, category_slug: 'digital' }],
+  ['家电', { category_id: 1, category_slug: 'digital' }],
+  ['电器', { category_id: 1, category_slug: 'digital' }],
+  ['智能', { category_id: 1, category_slug: 'digital' }],
+  ['配件', { category_id: 1, category_slug: 'digital' }],
+  ['办公', { category_id: 1, category_slug: 'digital' }],
+  ['游戏', { category_id: 1, category_slug: 'digital' }],
+  ['影音', { category_id: 1, category_slug: 'digital' }],
+  // 服饰鞋包
+  ['服饰', { category_id: 2, category_slug: 'fashion' }],
+  ['女装', { category_id: 2, category_slug: 'fashion' }],
+  ['男装', { category_id: 2, category_slug: 'fashion' }],
+  ['裙', { category_id: 2, category_slug: 'fashion' }],
+  ['裤', { category_id: 2, category_slug: 'fashion' }],
+  ['上衣', { category_id: 2, category_slug: 'fashion' }],
+  ['外套', { category_id: 2, category_slug: 'fashion' }],
+  ['内衣', { category_id: 2, category_slug: 'fashion' }],
+  ['鞋', { category_id: 2, category_slug: 'fashion' }],
+  ['靴', { category_id: 2, category_slug: 'fashion' }],
+  ['包', { category_id: 2, category_slug: 'fashion' }],
+  ['箱包', { category_id: 2, category_slug: 'fashion' }],
+  ['运动', { category_id: 2, category_slug: 'fashion' }],
+  ['户外', { category_id: 2, category_slug: 'fashion' }],
+  ['防晒衣', { category_id: 2, category_slug: 'fashion' }],
+  ['配饰', { category_id: 2, category_slug: 'fashion' }],
+  ['饰品', { category_id: 2, category_slug: 'fashion' }],
+  // 食品生鲜
+  ['食品', { category_id: 3, category_slug: 'food' }],
+  ['零食', { category_id: 3, category_slug: 'food' }],
+  ['坚果', { category_id: 3, category_slug: 'food' }],
+  ['饮料', { category_id: 3, category_slug: 'food' }],
+  ['茶', { category_id: 3, category_slug: 'food' }],
+  ['酒', { category_id: 3, category_slug: 'food' }],
+  ['生鲜', { category_id: 3, category_slug: 'food' }],
+  ['水果', { category_id: 3, category_slug: 'food' }],
+  ['蔬菜', { category_id: 3, category_slug: 'food' }],
+  ['肉类', { category_id: 3, category_slug: 'food' }],
+  ['海鲜', { category_id: 3, category_slug: 'food' }],
+  ['粮油', { category_id: 3, category_slug: 'food' }],
+  ['调味', { category_id: 3, category_slug: 'food' }],
+  ['乳品', { category_id: 3, category_slug: 'food' }],
+  ['烘焙', { category_id: 3, category_slug: 'food' }],
+  // 美妆个护
+  ['美妆', { category_id: 4, category_slug: 'beauty' }],
+  ['彩妆', { category_id: 4, category_slug: 'beauty' }],
+  ['护肤', { category_id: 4, category_slug: 'beauty' }],
+  ['香水', { category_id: 4, category_slug: 'beauty' }],
+  ['个护', { category_id: 4, category_slug: 'beauty' }],
+  ['洗护', { category_id: 4, category_slug: 'beauty' }],
+  ['洗发', { category_id: 4, category_slug: 'beauty' }],
+  ['沐浴', { category_id: 4, category_slug: 'beauty' }],
+  ['口腔', { category_id: 4, category_slug: 'beauty' }],
+  ['美容', { category_id: 4, category_slug: 'beauty' }],
+  ['面膜', { category_id: 4, category_slug: 'beauty' }],
+  ['精华', { category_id: 4, category_slug: 'beauty' }],
+  ['健康', { category_id: 4, category_slug: 'beauty' }],
+  ['保健', { category_id: 4, category_slug: 'beauty' }],
+  ['医药', { category_id: 4, category_slug: 'beauty' }],
+  ['器械', { category_id: 4, category_slug: 'beauty' }],
+  // 家居日用
+  ['家居', { category_id: 5, category_slug: 'home' }],
+  ['家装', { category_id: 5, category_slug: 'home' }],
+  ['建材', { category_id: 5, category_slug: 'home' }],
+  ['家具', { category_id: 5, category_slug: 'home' }],
+  ['家纺', { category_id: 5, category_slug: 'home' }],
+  ['床品', { category_id: 5, category_slug: 'home' }],
+  ['日用', { category_id: 5, category_slug: 'home' }],
+  ['百货', { category_id: 5, category_slug: 'home' }],
+  ['清洁', { category_id: 5, category_slug: 'home' }],
+  ['收纳', { category_id: 5, category_slug: 'home' }],
+  ['纸品', { category_id: 5, category_slug: 'home' }],
+  ['厨房', { category_id: 5, category_slug: 'home' }],
+  ['餐饮', { category_id: 5, category_slug: 'home' }],
+  ['宠物', { category_id: 5, category_slug: 'home' }],
+  ['园艺', { category_id: 5, category_slug: 'home' }],
+  ['灯饰', { category_id: 5, category_slug: 'home' }],
+  // 母婴用品
+  ['母婴', { category_id: 6, category_slug: 'baby' }],
+  ['童装', { category_id: 6, category_slug: 'baby' }],
+  ['童鞋', { category_id: 6, category_slug: 'baby' }],
+  ['玩具', { category_id: 6, category_slug: 'baby' }],
+  ['奶粉', { category_id: 6, category_slug: 'baby' }],
+  ['纸尿裤', { category_id: 6, category_slug: 'baby' }],
+  ['孕产', { category_id: 6, category_slug: 'baby' }],
+  ['婴儿', { category_id: 6, category_slug: 'baby' }],
+  ['儿童', { category_id: 6, category_slug: 'baby' }],
+];
 
 function guessCategory(catName: string): { category_id: number; category_slug: string } {
-  for (const [key, val] of Object.entries(PDD_CAT_MAP)) {
+  for (const [key, val] of PDD_CAT_MAP) {
     if (catName.includes(key)) return val;
   }
-  return { category_id: 1, category_slug: 'digital' }; // 默认数码
+  return { category_id: 5, category_slug: 'home' }; // 默认家居日用
 }
 
 /**
