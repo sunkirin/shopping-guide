@@ -15,7 +15,7 @@ export default function App() {
           <Route path="/category/:slug" element={<CategoryPage />} />
           <Route path="/product/:id" element={<ProductDetailPage />} />
           <Route path="/search" element={<SearchPage />} />
-          <Route path="/admin" element={<AdminPage />} />
+          <Route path="/k36m2x" element={<AdminPage />} />
         </Route>
       </Routes>
     </BrowserRouter>
