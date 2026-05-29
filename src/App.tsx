@@ -4,6 +4,7 @@ import HomePage from './pages/HomePage';
 import CategoryPage from './pages/CategoryPage';
 import ProductDetailPage from './pages/ProductDetailPage';
 import SearchPage from './pages/SearchPage';
+import AdminPage from './pages/AdminPage';
 
 export default function App() {
   return (
@@ -14,6 +15,7 @@ export default function App() {
           <Route path="/category/:slug" element={<CategoryPage />} />
           <Route path="/product/:id" element={<ProductDetailPage />} />
           <Route path="/search" element={<SearchPage />} />
+          <Route path="/admin" element={<AdminPage />} />
         </Route>
       </Routes>
     </BrowserRouter>
