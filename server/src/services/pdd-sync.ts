@@ -19,13 +19,15 @@ export async function syncPddProducts(params: {
   catId?: number;
   pages?: number;
   pageSize?: number;
+  sortType?: number;
 } = {}): Promise<{ added: number; total: number }> {
   const db = await getDatabase();
   ensurePddColumn();
 
-  const { keyword = '', catId, pages = 3, pageSize = 20 } = params;
+  const { keyword = '', catId, pages = 3, pageSize = 20, sortType = 0 } = params;
   let added = 0;
   let total = 0;
+  let listId = '';
 
   for (let page = 1; page <= pages; page++) {
     const res = await searchGoods({
@@ -34,8 +36,10 @@ export async function syncPddProducts(params: {
       page,
       pageSize,
       withCoupon: true,
-      sortType: 0,
+      sortType: sortType as any,
+      listId,
     });
+    listId = res.goods_search_response?.list_id || '';
 
     const list: PddGoodsBasic[] = res.goods_search_response?.goods_list || [];
     total += list.length;

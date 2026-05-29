@@ -134,6 +134,7 @@ export async function searchGoods(params: {
   sortType?: 0 | 1 | 2 | 3 | 4 | 5 | 6 | 7 | 8 | 9;
   withCoupon?: boolean;
   rangeList?: string;
+  listId?: string;
 }): Promise<PddSearchResponse> {
   const { pid } = getPddConfig();
   const data = await callPdd('pdd.ddk.goods.search', {
@@ -145,6 +146,7 @@ export async function searchGoods(params: {
     sort_type: params.sortType ?? 0,
     with_coupon: params.withCoupon !== false,
     range_list: params.rangeList,
+    list_id: params.listId,
   });
 
   return data as PddSearchResponse;

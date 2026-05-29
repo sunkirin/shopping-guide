@@ -8,8 +8,8 @@ const router = Router();
 
 router.post('/pdd/sync', async (req, res) => {
   try {
-    const { keyword, catId, pages, pageSize } = req.body || {};
-    const result = await syncPddProducts({ keyword, catId, pages, pageSize });
+    const { keyword, catId, pages, pageSize, sortType } = req.body || {};
+    const result = await syncPddProducts({ keyword, catId, pages, pageSize, sortType });
     res.json({ message: '拼多多同步完成', ...result });
   } catch (err: any) {
     console.error('PDD sync failed:', err.message);
