@@ -231,6 +231,24 @@ export async function searchGoods(params: {
 /**
  * 获取推荐商品（每次返回不同商品）
  */
+/**
+ * 查询推广订单（增量查询）
+ */
+export async function queryOrders(params: {
+  startTime: number; // unix timestamp
+  endTime: number;
+  page?: number;
+  pageSize?: number;
+}): Promise<any[]> {
+  const data = await callPdd('pdd.ddk.order.list.increment.get', {
+    start_update_time: String(params.startTime),
+    end_update_time: String(params.endTime),
+    page: String(params.page || 1),
+    page_size: String(params.pageSize || 100),
+  });
+  return data?.order_list_get_response?.order_list || [];
+}
+
 export async function getRecommendGoods(limit: number = 20): Promise<PddGoodsBasic[]> {
   const { pid } = getPddConfig();
   const data = await callPdd('pdd.ddk.goods.recommend.get', {

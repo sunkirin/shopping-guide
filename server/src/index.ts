@@ -17,6 +17,21 @@ const isProduction = process.env.NODE_ENV === 'production';
 app.use(cors());
 app.use(express.json());
 
+// Visit tracking
+app.use((req, _res, next) => {
+  if (req.path.startsWith('/api/') && !req.path.startsWith('/api/admin')) {
+    const ip = (req.headers['x-forwarded-for'] as string) || req.ip || '';
+    const ua = (req.headers['user-agent'] as string) || '';
+    // async insert, don't block
+    import('./database.js').then(({ getDatabase, dbRun }) => {
+      getDatabase().then(() => {
+        dbRun('INSERT INTO visits (path, ip, user_agent) VALUES (?, ?, ?)', [req.path, ip, ua]);
+      }).catch(() => {});
+    }).catch(() => {});
+  }
+  next();
+});
+
 // API Routes
 app.use('/api/products', productRoutes);
 app.use('/api/categories', categoryRoutes);
