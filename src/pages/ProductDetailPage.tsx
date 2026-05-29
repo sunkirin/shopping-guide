@@ -97,39 +97,65 @@ export default function ProductDetailPage() {
             <h1 className="text-xl sm:text-2xl font-bold leading-relaxed">{product.title}</h1>
             <p className="text-text-secondary text-sm leading-relaxed">{product.description}</p>
 
-            <div className="bg-primary-light/50 rounded-xl p-4">
+            {/* 价格 */}
+            <div className="bg-red-50 rounded-xl p-4">
               <PriceDisplay originalPrice={product.originalPrice} currentPrice={product.currentPrice} size="lg" />
               <div className="text-xs text-text-secondary mt-1">
                 已售 {(product.sales / 10000).toFixed(1)}万 | 评分 {product.rating}
               </div>
             </div>
 
+            {/* Step 1: 领券 */}
             {product.couponAmount > 0 && (
-              <div className="flex items-center gap-3 p-3 bg-orange-50 border border-orange-200 rounded-xl">
-                <CouponBadge amount={product.couponAmount} />
-                <span className="text-xs text-orange-600">有效期至 {product.endTime}</span>
+              <div className="bg-gradient-to-r from-red-500 to-orange-400 rounded-2xl p-5 text-white">
+                <div className="flex items-center justify-between">
+                  <div>
+                    <div className="text-xs opacity-80 mb-1">第一步 · 领取优惠券</div>
+                    <div className="text-3xl font-black">¥{product.couponAmount}</div>
+                    <div className="text-xs opacity-70 mt-1">有效期至 {product.endTime}</div>
+                  </div>
+                  <a
+                    href={product.couponLink || '#'}
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    onClick={!product.couponLink ? (e) => e.preventDefault() : undefined}
+                    className={`px-6 py-3 rounded-full text-sm font-black transition-transform hover:scale-105 ${
+                      product.couponLink
+                        ? 'bg-white text-red-500 cursor-pointer'
+                        : 'bg-white/50 text-white cursor-not-allowed'
+                    }`}
+                  >
+                    {product.couponLink ? '立即领券' : '暂无券'}
+                  </a>
+                </div>
               </div>
             )}
 
-            <div className="flex items-center gap-4 text-sm text-text-secondary">
-              <span className="bg-gray-100 px-3 py-1 rounded-full">{product.platformLabel}</span>
-              {product.isNew && <span className="bg-green-100 text-green-600 px-3 py-1 rounded-full">新品上市</span>}
-              {product.isHot && <span className="bg-red-100 text-red-500 px-3 py-1 rounded-full">热销爆款</span>}
-            </div>
-
+            {/* Step 2: 购买 */}
             <a
               href={product.buyLink || '#'}
               target="_blank"
               rel="noopener noreferrer"
-              onClick={product.buyLink ? undefined : (e) => e.preventDefault()}
-              className={`bg-gradient-to-r text-white text-center font-black text-lg py-3.5 rounded-full transition-transform shadow-lg shadow-pink/30 ${
+              onClick={!product.buyLink ? (e) => e.preventDefault() : undefined}
+              className={`flex items-center justify-center gap-2 text-center font-black text-lg py-4 rounded-2xl transition-all ${
                 product.buyLink
-                  ? 'from-[#FF4081] to-[#FF6D3A] hover:scale-105 cursor-pointer'
-                  : 'from-gray-400 to-gray-500 cursor-not-allowed opacity-50'
+                  ? 'bg-gradient-to-r from-[#FF4081] to-[#FF6D3A] text-white hover:scale-105 shadow-lg shadow-pink/30 cursor-pointer'
+                  : 'bg-gray-100 text-gray-400 cursor-not-allowed'
               }`}
             >
-              {product.buyLink ? '去购买 →' : '暂无购买链接'}
+              <span className="bg-white/20 text-xs font-bold px-2 py-0.5 rounded-full">第二步</span>
+              {product.buyLink ? '立即购买' : '暂无链接'}
+              {product.buyLink && (
+                <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
+                  <path d="M5 12h14M12 5l7 7-7 7"/>
+                </svg>
+              )}
             </a>
+
+            <div className="flex items-center gap-2 text-sm text-text-secondary">
+              <span className="bg-gray-100 px-3 py-1 rounded-full">{product.platformLabel}</span>
+              {product.isHot && <span className="bg-red-100 text-red-500 px-3 py-1 rounded-full">热销爆款</span>}
+            </div>
           </div>
         </div>
       </div>
